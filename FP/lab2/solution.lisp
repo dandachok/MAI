@@ -1,0 +1,12 @@
+(defun f (inputList dublicateList)
+    (let ((head (first inputList)) (tail (rest inputList)))
+        (if (null inputList)
+            (list)
+            (if (member head dublicateList)
+                (f tail dublicateList)
+                (if (member head tail)
+                    (f tail (append dublicateList (list head)))
+                    (append (list head) (f tail dublicateList)))))))
+
+(defun индивидуумы (inputList)
+    (f inputList (list)))

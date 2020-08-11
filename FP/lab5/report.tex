@@ -1,0 +1,188 @@
+\documentclass[12pt]{article}
+
+\usepackage[T2A]{fontenc}
+\usepackage{fullpage}
+\usepackage{multicol,multirow}
+\usepackage{tabularx}
+\usepackage{ulem}
+\usepackage[utf8]{inputenc}
+\usepackage[english, russian]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
+\usepackage{titlesec}
+
+\usepackage{erewhon}
+
+\renewcommand{\rmdefault}{erewhon}
+\titleformat{\section}
+  {\normalfont\Large\bfseries}{\thesection.}{0.3em}{}
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries}{\thesubsection.}{0.3em}{}
+
+\titlespacing{\section}{0pt}{*2}{*2}
+\titlespacing{\subsection}{0pt}{*1}{*1}
+\titlespacing{\subsubsection}{0pt}{*0}{*0}
+\usepackage{listings}
+\lstloadlanguages{Lisp}
+\lstset{extendedchars=false,
+	breaklines=true,
+	breakatwhitespace=true,
+	keepspaces = true,
+	tabsize=2
+}
+\begin{document}
+
+
+\section*{Отчет по лабораторной работе №\,5 по курсу \\
+\guillemotleft Функциональное программирование\guillemotright}
+\begin{flushright}
+Студент группы 8О-306 МАИ \textit{Наумов Дмитрий}, \textnumero 15 по списку \\
+\makebox[7cm]{Контакты: {\tt dandachok@gmail.com} \hfill} \\
+\makebox[7cm]{Работа выполнена: 27.04.2020 \hfill} \\
+\ \\
+Преподаватель: Иванов Дмитрий Анатольевич, доц. каф. 806 \\
+\makebox[7cm]{Отчет сдан: \hfill} \\
+\makebox[7cm]{Итоговая оценка: \hfill} \\
+\makebox[7cm]{Подпись преподавателя: \hfill} \\
+
+\end{flushright}
+
+\section{Тема работы}
+Обобщённые функции, методы и классы объектов
+
+\section{Цель работы}
+Научиться определять простейшие классы, порождать экземпляры классов, считывать и изменять значения слотов, научиться определять обобщённые функции и методы.
+
+\section{Задание (вариант №41)}
+Определить обычную функцию {\tt on-single-line-p} - предикат,
+
+\begin{itemize}
+  \item принимающий в качестве аргумента список точек (радиус-векторов),
+  \item возвращающий {\tt T}, если все указанные точки лежат на одной прямой (вычислять с допустимым отклонением {\tt *tolerance*}).
+\end{itemize}
+
+Точки могут быть заданы как декартовыми координатами (экземплярами {\tt cart}), так и полярными (экземплярами {\tt polar}).
+
+\begin{lstlisting}[language=lisp]
+  (defvar *tolerance* 0.001)
+
+  (defun on-single-line-p (vertices)
+    ...)
+\end{lstlisting}
+\section{Оборудование студента}
+Процессор Intel Core i3-2100 4\,@\,2.2GHz, память: 8Gb, разрядность системы: 64.
+
+\section{Программное обеспечение}
+ОС Ubuntu 18.04.4 LTS, clisp 2.49.60
+
+\section{Идея, метод, алгоритм}
+Программа состоит из следующих функций:
+\begin{itemize}
+  \item {\tt cart-x} вычисляет $x$-координату из полярных
+  \item {\tt cart-y} вычисляет $y$-координату из полярных
+  \item {\tt to-cart} преобразует координаты в декартовое представление:
+  
+    \begin{itemize}
+      \item если передается объект {\tt cart}, то возвращает его
+      \item если передается объект {\tt polar}, то вычисляет $x, y$ и создает объект класса {\tt cart}
+    \end{itemize}
+  \item {\tt on-line-p} проверяет, находится ли точка на прямой в каноническом представлении с параметрами $x1, y1, x2, y2$
+    
+    Функция просто проверяет выполнение следующего условия:
+    \[\frac{x - x_1}{x_1 - x_2} - \frac{y - y_1}{y_1 - y_2} \approx 0 \]
+  \item {\tt on-single-line-p} проверяет все точки списка на пренадлежность прямой
+    
+    В качестве параметров прямой берутся координаты первых двух точек.
+\end{itemize}
+
+\pagebreak
+
+\section{Распечатка программы и её результаты}
+\subsection{Исходный код}
+\begin{lstlisting} [language=lisp]
+  (defvar *tolerance* 0.001)
+  (defclass cart ()
+   ((x :initarg :x :reader x)
+    (y :initarg :y :reader y)))
+  (defclass polar ()
+   ((radius :initarg :radius :accessor radius)
+    (angle  :initarg :angle  :accessor angle)))
+  (defmethod cart-x ((p polar))
+    (* (radius p) (cos (angle p))))
+  
+  (defmethod cart-y ((p polar))
+    (* (radius p) (sin (angle p))))
+  
+  (defgeneric to-cart (arg)
+    (:method ((c cart))
+    c)
+  (:method ((p polar))
+    (make-instance 'cart :x (cart-x p) :y (cart-y p))))
+  
+  (defmethod on-line-p ((c cart) x1 y1 x2 y2)
+    (let ((a1 (- x1 x2)) (a2 (- y1 y2)))
+      (cond ((< (abs a1) *tolerance*) 
+                (< (abs (- (x c) x1)) *tolerance*))
+            ((< (abs a2) *tolerance*) 
+                (< (abs (- (y c) y1)) *tolerance*))
+            (T (< (abs (- (/ (- (x c) x1) a1) 
+                          (/ (- (y c) y1) a2))) 
+                  *tolerance*)))))
+  
+  (defun on-single-line-p (vertices)
+    (let ((x1 (x (to-cart (first vertices)))) 
+          (y1 (y (to-cart (first vertices))))
+          (x2 (x (to-cart (second vertices))))
+          (y2 (y (to-cart (second vertices)))))
+      (loop for point in vertices
+        do (if (not (on-line-p (to-cart point) x1 y1 x2 y2))
+          (return-from on-single-line-p NIL)))
+    T))
+\end{lstlisting}
+
+\subsection{Результаты работы}
+\begin{lstlisting}
+dandachok@dpc:~/Documents/Study/sem6/FP/lab5$ clisp
+[1]> (load "solution.lisp")
+;; Loading file solution.lisp ...
+;; Loaded file solution.lisp
+#P"/home/dandachok/Documents/Study/sem6/FP/lab4/solution.lisp"
+[38]> (setq c1 (make-instance 'cart :x 1 :y 1))
+#<CART #x55E960AC1C68>
+[38]> (setq c2 (make-instance 'cart :x 2 :y 2))
+#<CART #x55E960ACF4F8>
+[38]> (setq p1 (make-instance 'polar :radius 5 :angle (/ pi 4)))
+#<POLAR #x55E960ADCE08>
+[38]> (setq p2 (make-instance 'polar :radius 5 :angle (/ pi 6)))
+#<POLAR #x55E960AEA718>
+[38]> (setq l1 (list c1 c2 p1))
+(#<CART #x55E960AC1C68> #<CART #x55E960ACF4F8> #<POLAR #x55E960ADCE08>)
+[38]> (setq l2 (list c1 c2 p2))
+(#<CART #x55E960AC1C68> #<CART #x55E960ACF4F8> #<POLAR #x55E960AEA718>)
+[38]> (on-single-line-p l1)
+T
+[38]> (on-single-line-p l2)
+NIL
+\end{lstlisting}
+
+\section{Дневник отладки}
+\begin{tabular}{| l | m{3cm} | l | l |}
+\hline
+Дата & Событие & Действие по исправлению & Примечание \\
+\hline
+19.05.20 & Неправильное объявление функции & Заменить макрос {\tt defun} на {\tt defmethod} & \\
+\hline
+\end{tabular}
+
+\section{Замечания автора по существу работы}
+
+\begin{lstlisting}[language=lisp]
+
+\end{lstlisting}
+
+\section{Выводы}
+Сложность программы по времени и по памяти линейная.
+\end{document}

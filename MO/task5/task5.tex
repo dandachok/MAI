@@ -1,0 +1,204 @@
+\documentclass{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{mathtext}
+\usepackage[T1,T2A, T2B]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{indentfirst}
+
+
+\usepackage{graphicx}
+\usepackage{pgfplots}
+
+\renewcommand{\thesubsection}{\Roman{subsection} Фаза}
+\renewcommand{\theenumi}{\arabic{enumi}}
+\renewcommand{\labelenumi}{\arabic{enumi}}
+\renewcommand{\theenumii}{\arabic{enumii}}
+\renewcommand{\labelenumii}{\arabic{enumii})}
+
+\oddsidemargin=-0.4mm
+\textwidth=160mm
+\topmargin=4.6mm
+\textheight=210mm
+
+\parindent=0pt
+\parskip=3pt
+
+\title{Домашняя работа}
+\date{}
+
+\pgfplotsset{compat=1.9}
+\begin{document}
+
+\begin{titlepage}
+
+\vspace{100pt}
+\begin{center}
+    \huge \textbf{Домашняя работа}
+
+    \vspace{50pt}
+    
+    \huge \textbf{Линейное программирование}
+    
+    \vspace{30pt}
+    
+    \huge \textbf{Двухфазный симплекс-метод}
+\end{center}
+\begin{flushright}
+
+\vspace{350pt}
+\begin{tabular}{rl}
+     \Large Студент: & \Large Д.Д.Наумов \\
+     \Large Группа: & \Large 8О-306Б-17 \\
+\end{tabular}
+\end{flushright}
+\end{titlepage}
+
+\setcounter{section}{0}
+\subsection*{Задание}
+Человек должен потреблять в сутки определенное количество питательных веществ $A$, $B$, $C$.
+Количества этих веществ в различных видах пищи $P_i$ даны в таблице. Здесь же указаны и цены единицы пищи.
+
+\subsection*{Вариант}
+Номер по списку: 15
+
+\begin{tabular}{| l | l | l | l |}
+    \hline
+    Питательные вещества & Норма & $P_1$ & $P_2$ \\
+    \hline
+    $A$ & $150$ & $5$ & $2$ \\
+    \hline
+    $B$ & $90$ & $1$ & $2$ \\
+    \hline
+    $C$ & $450$ & $10$ & $6$ \\
+    \hline
+    Цена & & $10$ & $6$ \\
+    \hline
+\end{tabular}
+
+\pagebreak
+
+\section*{Решение}
+\subsection{}
+\begin{enumerate}
+\item Математическая модель
+    
+    $\begin{aligned}
+        &5x_1 + 2x_2 \geqslant 150 \\
+        &x_1 + 2x_2 \geqslant 90 \\
+        &10x_1 + 6x_2 \geqslant 450 \\
+        &f = 10x_1 + 6x_2 \rightarrow min\\
+    \end{aligned} \Longrightarrow \ \ 
+    \begin{aligned}
+        &5x_1 + 2x_2 - x_3 = 150 \\
+        &x_1 + 2x_2 - x_4 = 90 \\
+        &10x_1 + 6x_2 - x_5 = 450 \\
+        &f = 10x_1 + 6x_2 \rightarrow min\\
+    \end{aligned}$
+\item Составляем вспомогательную ЗЛП
+    
+    $\begin{aligned}
+        &\xi_1 = 150 - 5x_1 - 2x_2 + x_3 \\
+        &\xi_2 = 90 - x_1 - 2x_2 + x_4 \\
+        &\xi_3 = 450 - 10x_1 - 6x_2 + x_5 \\
+        &\Phi = 690 
+        - 16x_1 - 10x_2 + x_3 + x_4 + x_5 \rightarrow min\\
+    \end{aligned}$
+\item Решение ВЗЛП
+\begin{center}
+        
+    \begin{tabular}{ c | c | c | c | c | c | c}
+        & $\beta$ & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$\\
+        \hline
+        $\xi_1$ & $150$ & $\boxed{-5}$ & $-2$ & $1$  & $0$ & $0$ \\
+        $\xi_2$ & $90$ & $-1$ & $-2$ & $0$ & $1$ & $0$ \\
+        $\xi_3$ & $450$ & $-10$ & $-6$ & $0$ & $0$ & $1$ \\
+        \hline
+        $\Phi$   & $690$ & $-16$ & $-10$ & $1$ & $1$ & $1$ \\
+    \end{tabular}
+
+    $\Downarrow$
+
+    \begin{tabular}{ c | c | c | c | c | c | c}
+        & $\beta$ & $\xi_1$ & $x_2$ & $x_3$ & $x_4$ & $x_5$\\
+        \hline
+        $x_1$ & $30$ & $-0{,}2$ & $-0{,}4$ & $0{,}2$  & $0$ & $0$ \\
+        $\xi_2$ & $60$ & $0{,}2$ & $\boxed{-1{,}6}$ & $-0{,}2$ & $1$ & $0$ \\
+        $\xi_3$ & $150$ & $2$ & $-2$ & $-2$ & $0$ & $1$ \\
+        \hline
+        $\Phi$   & $210$ & $3{,}2$ & $-3{,}6$ & $-2{,}2$ & $1$ & $1$ \\
+    \end{tabular}
+
+    $\Downarrow$
+
+    \begin{tabular}{ c | c | c | c | c | c | c}
+        & $\beta$ & $\xi_1$ & $\xi_2$ & $x_3$ & $x_4$ & $x_5$\\
+        \hline
+        $x_1$   & $15$ & $-0{,}25$ & $0{,}25$ & $0{,}25$ & $-0{,}25$ & $0$ \\
+        $x_2$ & $37{,}5$ & $0{,}125$ & $-0{,}625$ & $-0{,}125$ & $0.625$ & $0$ \\
+        $\xi_3$ & $75$ & $1{,}75$ & $1{,}25$ & $\boxed{-1{,}75}$ & $-1.25$ & $1$ \\
+        \hline
+        $\Phi$   & $75$ & $2{,}75$ & $2{,}25$ & $-1{,}75$ & $-1{,}25$ & $1$ \\
+    \end{tabular}
+
+    $\Downarrow$
+
+    \begin{tabular}{ c | c | c | c | c | c | c}
+        & $\beta$ & $\xi_1$ & $\xi_2$ & $\xi_3$ & $x_4$ & $x_5$\\
+        \hline
+        & & & & & & \\
+        $x_1$ & $\begin{aligned}\frac{180}{7}\end{aligned}$ & $0$ & $\begin{aligned}\frac{3}{7}\end{aligned}$ & $-\begin{aligned}\frac{1}{7}\end{aligned}$ & $-\begin{aligned}\frac{3}{7}\end{aligned}$ & $\begin{aligned}\frac{1}{7}\end{aligned}$ \\
+        & & & & & & \\
+        $x_2$ & $\begin{aligned}\frac{225}{7}\end{aligned}$ & $0$ & $-\begin{aligned}\frac{5}{7}\end{aligned}$ & $\begin{aligned}\frac{1}{14}\end{aligned}$ & $\begin{aligned}\frac{5}{7}\end{aligned}$ & $-\begin{aligned}\frac{1}{14}\end{aligned}$ \\
+        & & & & & & \\
+        $x_3$ & $\begin{aligned}\frac{300}{7}\end{aligned}$ & $1$ & $\begin{aligned}\frac{5}{7}\end{aligned}$  & $-\begin{aligned}\frac{4}{7}\end{aligned}$ & $-\begin{aligned}\frac{5}{7}\end{aligned}$ & $\begin{aligned}\frac{4}{7}\end{aligned}$ \\
+        & & & & & & \\
+        \hline
+        & & & & & & \\
+        $\Phi$   & $0$ & $1$ & $1$ & $1$ & $0$ & $0$ \\
+    \end{tabular}
+\end{center}
+\item $\min\Phi \ngtr 0$
+\item Все $\xi_i$ свободные
+\item Симплекс-таблица для исходной ЗЛП
+
+\begin{tabular}{ c | c | c | c}
+    & $\beta$ & $x_4$ & $x_5$\\
+    \hline
+    & & & \\
+    $x_1$ & $\begin{aligned}\frac{180}{7}\end{aligned}$ & $-\begin{aligned}\frac{3}{7}\end{aligned}$ & $\begin{aligned}\frac{1}{7}\end{aligned}$ \\
+    & & &\\
+    $x_2$ & $\begin{aligned}\frac{225}{7}\end{aligned}$ & $\begin{aligned}\frac{5}{7}\end{aligned}$ & $-\begin{aligned}\frac{1}{14}\end{aligned}$ \\
+    & & & \\
+    $x_3$ & $\begin{aligned}\frac{300}{7}\end{aligned}$ & $-\begin{aligned}\frac{5}{7}\end{aligned}$ & $\begin{aligned}\frac{4}{7}\end{aligned}$ \\
+    & & & \\
+    \hline
+    & & & \\
+    $f$ & $450$ & $0$ & $1$ \\
+\end{tabular}
+
+\item все $\gamma_i \geqslant 0 \Rightarrow $ таблица оптимальна
+ 
+\end{enumerate}
+
+Ответ: $x_1 = \begin{aligned}\frac{180}{7},\ x_2 = \frac{225}{7}\end{aligned}$.
+
+\usepgflibrary[patterns]
+\usetikzlibrary{patterns}.
+
+\begin{tikzpicture}
+    \begin{axis} [
+        scale = 2,
+        xmin = 0,
+        ymin = 0,
+        xmax = 100,
+        ymax = 100,
+        samples = 100,
+    ]
+    \addplot[blue, pattern = crosshatch dots, pattern color = blue, domain=1:90]{30 - 0.4*x} \closedcycle;
+    \addplot[gray, pattern = {north east lines}, pattern color = gray, domain=1:90]{90 - 2*x} \closedcycle;
+    \addplot[red, pattern = crosshatch dots, pattern color = red,domain=1:90]{45 - 0.6*x} \closedcycle;
+    \end{axis}
+\end{tikzpicture}
+
+\end{document}

@@ -1,0 +1,137 @@
+\documentclass[12pt]{article}
+
+\usepackage{fullpage}
+\usepackage{multicol,multirow}
+\usepackage{tabularx}
+\usepackage{ulem}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{titlesec}
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries}{\thesection.}{0.3em}{}
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries}{\thesubsection.}{0.3em}{}
+
+\titlespacing{\section}{0pt}{*2}{*2}
+\titlespacing{\subsection}{0pt}{*1}{*1}
+\titlespacing{\subsubsection}{0pt}{*0}{*0}
+\usepackage{listings}
+\lstloadlanguages{Lisp}
+\lstset{extendedchars=false,
+	breaklines=true,
+	breakatwhitespace=true,
+	keepspaces = true,
+	tabsize=2
+}
+\begin{document}
+
+
+\section*{Отчет по лабораторной работе №\,2 
+по курсу \guillemotleft  Функциональное программирование\guillemotright}
+\begin{flushright}
+Студент группы 8О-306 МАИ \textit{Наумов Дмитрий}, \textnumero 15 по списку \\
+\makebox[7cm]{Контакты: {\tt dandachok@gmail.com} \hfill} \\
+\makebox[7cm]{Работа выполнена: 16.03.2020 \hfill} \\
+\ \\
+Преподаватель: Иванов Дмитрий Анатольевич, доц. каф. 806 \\
+\makebox[7cm]{Отчет сдан: \hfill} \\
+\makebox[7cm]{Итоговая оценка: \hfill} \\
+\makebox[7cm]{Подпись преподавателя: \hfill} \\
+
+\end{flushright}
+
+\section{Тема работы}
+Примитивные функции и особые операторы Коммон Лисп
+
+\section{Цель работы}
+Научиться вводить S-выражения в Лисп-систему, определять переменные и функции, работать с условными операторами, работать с числами, использую схему линейной и древовидной рекурсии.
+
+\section{Задание (вариант №48)}
+Реализуйте на языке Коммон Лисп программу для умножения двух целых чисел за логарифмическое число шагов. Можно использовать функции сложения, вычитания, умножения и деления числа на 2, но нельзя умножать произвольные числа.
+
+\section{Оборудование студента}
+Процессор Intel Core i5-5200 4\,@\,2.2GHz, память: 4Gb, разрядность системы: 64.
+
+\section{Программное обеспечение}
+ОС Ubuntu 18.04.4 LTS, clisp 2.49.60
+
+\section{Идея, метод, алгоритм}
+Функция {\tt fast*} рекурсивна и работает следующим образом:
+\begin{itemize}
+\setlength{\itemsep}{-1mm} % уменьшает расстояние между элементами списка
+\item если один из аргументов ноль, то вернет ноль, иначе
+\item если второй аргумент равен {\tt 1} или {\tt -1}, то вернет {\tt a} и {\tt -a} соответственно, иначе
+\item если второй аргумент меньше нуля, то вернет значение функции(как если бы второй аргумент был положительным) с противоположным знаком, иначе
+\item если {\tt b} нечетное, то вернет  сумму {\tt a} и разультат умножения {\tt a} на {\tt b-1}, иначе
+\item вернет результат умножения {\tt a} на {\tt b/2} умноженный на 2 
+\end{itemize}
+
+\section{Распечатка программы и её результаты}
+\subsection{Исходный код}
+\begin{lstlisting} [language=lisp]
+(defun fast* (a b)
+    (if (or (= a 0) (= b 0))
+        0
+        (if (= b 1)
+            a
+            (if (= b (- 1))
+                (- a)
+                (if (< b 0)
+                    (- (fast* a (- b)))
+                    (if (= (mod b 2) 1)
+                        (+ a (fast* a (- b 1)))
+                        (* 2 (fast* a (/ b 2)))))))))
+\end{lstlisting}
+
+\subsection{Результаты работы}
+\subsection{Исходный код}
+
+\subsection{Результаты работы}
+\begin{lstlisting} [language=terminal]
+eldar@eldar-Aspire-E5-573G:~/fp/dima/task1$ clisp
+[1]> (load "./solution")
+;; Загружается файл /home/eldar/fp/dima/task1/solution.fas...
+;; Загружен файл /home/eldar/fp/dima/task1/solution.fas
+#P"/home/eldar/fp/dima/task1/solution.fas"
+[2]> (fast* 1 0)
+0
+[3]> (fast* 0 1)
+0
+[4]> (fast* 1 1)
+1
+[5]> (fast* 2 -1)
+-2
+[6]> (fast* 2 5)
+10
+[7]> (fast* 2 4)
+8
+[8]> (fast* -2 4)
+-8
+[9]> (fast* -2 -4)
+8
+[10]> (fast* 2 -4)
+-8
+[11]> (fast* 123 345)
+42435
+[12]> (exit)
+\end{lstlisting}
+
+\section{Дневник отладки}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Дата & Событие & Действие по исправлению & Примечание \\
+\hline
+\end{tabular}
+
+\section{Замечания автора по существу работы}
+Данное задание схоже с быстрым возведением в степень, которое мне приходилось реализовывать на 2 курсе, поэтому с алгоритмом проблем не возникло.
+
+\section{Выводы}
+Программа работает за логарифмическое время. Но смысла в этом мало, т.к. аппаратно умножение производиться за константу, но реализованное аналогично возведение в степень будет быстрее, чем последовательное умножение.
+
+\end{document}

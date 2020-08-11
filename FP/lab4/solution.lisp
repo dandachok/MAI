@@ -1,0 +1,47 @@
+(defun russian-upper-case-p (char)
+  (position char "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"))
+
+(defun russian-char-downcase (char)
+  (let ((i (russian-upper-case-p char)))
+    (if i 
+        (char "абвгдеёжзийклмнопрстуфхцчшщъыьэюя" i)
+        (char-downcase char)))) 
+
+(defun russian-string-downcase (string)
+  (map 'string #'russian-char-downcase string))
+
+(defun more-two-symbol-p (string)
+    (let ((str (russian-string-downcase (string-right-trim ",.:!?" string))) (symbols (list)))
+        (let ((len (length str)))
+        (do ((i 0 (+ i 1)))
+            ((>= i len))
+            (if (not (member (char str i) symbols))
+                (setf symbols (append symbols (list (char str i)))))
+            )
+        (> (length symbols) 2)
+)))
+
+(defun space-p (char)
+    (member char '(#\Space #\Tab #\Newline)))
+
+(defun remove-two-char-words (text)
+    (let (ans (list))
+        (dolist (sentence text)
+            (let ((len (length sentence)) (right 0) (ans-str "") (word "") (more-two NIL))
+                (do ((left 0 (+ left 1)))
+                    ((>= left len))
+                    (setf right (or (position-if #'space-p sentence :start left) len))
+                    (setf word (subseq sentence left right))
+                    (setf more-two (more-two-symbol-p word))
+                    (if more-two
+                        (setf ans-str (concatenate 'string ans-str word)))
+                    (if (and (< right len) (or more-two (= right left) (not (space-p (char sentence right)))))
+                        (setf ans-str (concatenate 'string ans-str (make-string 1 :initial-element (char sentence right)))))
+                    (setf left right)
+                )
+                (setf ans (append ans (list ans-str)))
+            )
+        )
+        ans
+    )
+)

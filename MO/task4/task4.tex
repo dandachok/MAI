@@ -1,0 +1,196 @@
+\documentclass{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{mathtext}
+\usepackage[T1,T2A, T2B]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{indentfirst}
+
+\usepackage{graphicx}
+\usepackage{pgfplots}
+
+\renewcommand{\theenumi}{\arabic{enumi}}
+\renewcommand{\labelenumi}{\arabic{enumi}}
+
+\renewcommand{\theenumii}{\arabic{enumii}}
+\renewcommand{\labelenumii}{\arabic{enumii})}
+
+\oddsidemargin=-0.4mm
+\textwidth=160mm
+\topmargin=4.6mm
+\textheight=210mm
+
+\parindent=0pt
+\parskip=3pt
+
+\title{Домашняя работа}
+\date{}
+
+\pgfplotsset{compat=1.9}
+\begin{document}
+
+\begin{titlepage}
+
+\vspace{100pt}
+\begin{center}
+    \huge \textbf{Домашняя работа}
+
+    \vspace{50pt}
+    
+    \huge \textbf{Линейное программирование}
+    
+    \vspace{30pt}
+    
+    \huge \textbf{Симплекс-метод}
+\end{center}
+\begin{flushright}
+
+\vspace{350pt}
+\begin{tabular}{rl}
+     \Large Студент: & \Large Д.Д.Наумов \\
+     \Large Группа: & \Large 8О-306Б-17 \\
+\end{tabular}
+\end{flushright}
+\end{titlepage}
+
+\setcounter{section}{0}
+\subsection*{Задание}
+
+Фабрика производит 3 вида продукции, каждый из которых проходит обработку на токарном, фрезерном и сверлильном станках.
+
+Затраты времени на обработку единицы продукции $j$-того типа на станке $i$-того типа составляют $a_{ij}$ единиц. 
+
+Количество времени, которое может затратить станок $i$-того типа в неделю, ограничено и составляет $b_i$  единиц.
+
+Прибыль от продажи единицы продукции $j$-того типа составляет $c_j$ единиц. 
+
+Определить количество продукции каждого типа, которое должна произвести фабрика в течение недели из условия получения максимальной прибыли.
+\subsection*{Вариант}
+Номер по списку: 15
+
+\begin{tabular}{| l | l | l | l | l | l | l |}
+    \hline
+    $$ & $1$ & $2$ & $3$ & $b_i$ & $c_i$ \\
+    \hline
+    $1$ & $10$ & $15$ & $5$ & $105000$ & $150$\\
+    \hline
+    $2$ & $20$ & $5$ & $5$ & $135000$ & $1500$\\
+    \hline
+    $3$ & $5$ & $10$ & $20$ & $180000$ & $7500$\\
+    \hline
+\end{tabular}
+
+\pagebreak
+
+\section*{Решение}
+
+\begin{enumerate}
+\item Математическая модель
+    
+    $\begin{aligned}
+        &10x_1 + 15x_2 + 5x_3 \leqslant 105000 \\
+        &20x_1 + 5x_2 + 5x_3 \leqslant 135000 \\
+        &5x_1 + 10x_2 + 20x_3 \leqslant 180000 \\
+        &F = 150x_1 + 1500x_2 + 7500x_3 \rightarrow max\\
+    \end{aligned} \Longrightarrow \ \ 
+    \begin{aligned}
+        &10x_1 + 15x_2 + 5x_3 = 105000 \\
+        &20x_1 + 5x_2 + 5x_3 = 135000 \\
+        &5x_1 + 10x_2 + 20x_3 = 180000 \\
+        &f = -F = -150x_1 - 1500x_2 - 7500x_3 \rightarrow min\\
+    \end{aligned}$
+\item Выражаем переменные
+    
+    $\begin{aligned}
+        &x_4 = 105000 - 10x_1 - 15x_2 - 5x_3 \\
+        &x_5 = 135000 - 20x_1 - 5x_2 - 5x_3 \\
+        &x_6 = 180000 - 5x_1 - 10x_2 - 20x_3 \\
+    \end{aligned}$
+\item Cостовляем симплекс-таблицу
+
+    \begin{tabular}{ l | l | l | l | l }
+        & & $x_1$ & $x_2$ & $x_3$ \\
+        \hline
+        $x_4$ & $105000$ & $-10$ & $-15$ & $-5$ \\
+        $x_5$ & $135000$ & $-20$ & $-5$ & $-5$ \\
+        $x_6$ & $180000$ & $-5$ & $-10$ & $\boxed{-20}$ \\
+        \hline
+        $f$   & $0$ & $-150$ & $-1500$ & $-7500$ \\
+    \end{tabular}
+
+\item Работа с симлекс-таблицей
+
+\begin{enumerate}
+    \item все $\gamma_j$ отрицательные
+    \item $\gamma_s = -7500$
+    \item над $\gamma_s$ все $d_{is}$ отрицательные
+    \item $\min\left\{\begin{aligned}
+        \frac{105}{|-5|}, \frac{135}{|-5|}, \frac{180}{|-20|} 
+    \end{aligned}\right\} = \begin{aligned}
+        \frac{180}{|-20|}
+    \end{aligned} \longrightarrow (-20)$ - ведущий элемент 
+\end{enumerate}
+\item Пересчет симплекс-таблицы
+
+\renewcommand{\labelenumii}{\Roman{enumii}}
+
+\begin{enumerate}
+    \item Ведущий элемент
+        
+        $-20 \rightarrow -\frac{1}{20} = -0{,}05$
+    \item Столбец ведущего элемента 
+    
+    $\begin{aligned}
+        &-5 \rightarrow \frac{1}{4} = 0{,}25\\
+        &-5 \rightarrow \frac{1}{4} = 0{,}25\\
+        &-7500 \rightarrow 375 \\
+    \end{aligned}$
+
+    \item Строка ведущего элемента
+    
+    $\begin{aligned}
+        &-10 \rightarrow -\frac{1}{4} = -0{,}25\\
+        &-5 \rightarrow -\frac{1}{2} = -0{,}5\\
+        &180000 \rightarrow 9000 \\
+    \end{aligned}$
+
+    \pagebreak
+
+    \item Остальные элементы\\
+    
+    $\begin{aligned}
+        &\begin{pmatrix} 105000 & -5 \\ 180000 & \boxed{-20} \end{pmatrix} \rightarrow 60000 \ & \
+        &\begin{pmatrix} -10 & -5 \\ -5 & \boxed{-20} \end{pmatrix} \rightarrow -8{,}75 \ & \
+        &\begin{pmatrix} -15 & -5 \\ -10 & \boxed{-20} \end{pmatrix} \rightarrow -12{,}5 \\
+        &\begin{pmatrix} 135000 & -5 \\ 180000 & \boxed{-20} \end{pmatrix} \rightarrow 90000 \ & \
+        &\begin{pmatrix} -10 & -5 \\ -5 & \boxed{-20} \end{pmatrix} \rightarrow -18{,}75 \ & \
+        &\begin{pmatrix} -5 & -5 \\ -10 & \boxed{-20} \end{pmatrix} \rightarrow -2{,}5 \\
+        &\begin{pmatrix} 180000 & \boxed{-20} \\ 0 & -7500 \end{pmatrix} \rightarrow -67500000 \ & \
+        &\begin{pmatrix} -5 & \boxed{-20} \\ -150 & -7500 \end{pmatrix} \rightarrow 1725 \ & \
+        &\begin{pmatrix} -10 & \boxed{-20} \\ -1500 & -7500 \end{pmatrix} \rightarrow 2250 \\
+        \end{aligned}$
+\end{enumerate}
+
+\item Переходим к 3
+
+\setcounter{enumi}{2}
+
+\item Вторая симплекс-таблица
+
+\begin{tabular}{ l | l | l | l | l }
+    & & $x_1$ & $x_2$ & $x_6$ \\
+    \hline
+    $x_4$ & $60000$ & $-8{,}75$ & $-12{,}5$ & $-0{,}25$ \\
+    $x_5$ & $90000$ & $-18{,}75$ & $-2{,}5$ & $-0{,}25$ \\
+    $x_3$ & $9000$ & $-0{,}25$ & $-0{,}5$ & $-0{,}05$ \\
+    \hline
+    $f$   & $-67500000$ & $1725$ & $2250$ & $375$ \\
+\end{tabular}
+
+\item Проверка условия
+
+    Все $\gamma_j > 0 \Rightarrow$ симплекс-таблица оптимальна
+\end{enumerate}
+
+Ответ: $x_1 = 0,\ x_2 = 0,\ x_3 = 9000$.
+\end{document}

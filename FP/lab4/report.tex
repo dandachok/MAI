@@ -1,0 +1,173 @@
+\documentclass[12pt]{article}
+
+\usepackage[T2A]{fontenc}
+\usepackage{fullpage}
+\usepackage{multicol,multirow}
+\usepackage{tabularx}
+\usepackage{ulem}
+\usepackage[utf8]{inputenc}
+\usepackage[english, russian]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
+\usepackage{titlesec}
+
+\usepackage{erewhon}
+
+\renewcommand{\rmdefault}{erewhon}
+\titleformat{\section}
+  {\normalfont\Large\bfseries}{\thesection.}{0.3em}{}
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries}{\thesubsection.}{0.3em}{}
+
+\titlespacing{\section}{0pt}{*2}{*2}
+\titlespacing{\subsection}{0pt}{*1}{*1}
+\titlespacing{\subsubsection}{0pt}{*0}{*0}
+\usepackage{listings}
+\lstloadlanguages{Lisp}
+\lstset{extendedchars=false,
+	breaklines=true,
+	breakatwhitespace=true,
+	keepspaces = true,
+	tabsize=2
+}
+\begin{document}
+
+
+\section*{Отчет по лабораторной работе №\,4 
+по курсу \\
+\guillemotleft Функциональное программирование\guillemotright}
+\begin{flushright}
+Студент группы 8О-306 МАИ \textit{Наумов Дмитрий}, \textnumero 15 по списку \\
+\makebox[7cm]{Контакты: {\tt dandachok@gmail.com} \hfill} \\
+\makebox[7cm]{Работа выполнена: 27.04.2020 \hfill} \\
+\ \\
+Преподаватель: Иванов Дмитрий Анатольевич, доц. каф. 806 \\
+\makebox[7cm]{Отчет сдан: \hfill} \\
+\makebox[7cm]{Итоговая оценка: \hfill} \\
+\makebox[7cm]{Подпись преподавателя: \hfill} \\
+
+\end{flushright}
+
+\section{Тема работы}
+Знаки и строки
+
+\section{Цель работы}
+Научиться работать с литерами (знаками) и строками при помощи функций обработки строк и общих функций работы с последовательностями.
+
+\section{Задание (вариант №43)}
+Запрограммировать на языке Коммон Лисп функцию, принимающую один аргумент - текст.
+
+Функция должна удалить все слова, в которых встречается не более двух различных букв, и вернуть новый текст. Сравнение как латинских букв, так и русских должно быть регистро-независимым.
+\begin{lstlisting}[language=lisp]
+(remove-two-char-words '("Оно скрылось за деревьями." 
+                        "Мы прошли, не заметив его."))
+ => ("скрылось деревьями." "прошли, заметив его.")
+\end{lstlisting}
+\section{Оборудование студента}
+Процессор Intel Core i3-2100 4\,@\,2.2GHz, память: 8Gb, разрядность системы: 64.
+
+\section{Программное обеспечение}
+ОС Ubuntu 18.04.4 LTS, clisp 2.49.60
+
+\pagebreak
+
+\section{Идея, метод, алгоритм}
+Функция {\tt russian-upper-case-p} проверяет, находится ли буква в верхнем регистре, если да, то возвращает ее номер.
+
+{\tt russian-char-downcase} возвращает символ в нижнем регистре.
+
+{\tt russian-string-downcase} возращает строку в нижнем регистре.
+
+Функция {\tt more-two-symbol-p} возвращает {\tt T}, если строка содержит больше двух букв, {\tt NIL} в противном случае.
+Реализация довольно простая, помещаем каждую букву в список, если ее там еще нет. Затем проверяем размер списка.
+
+Функция {\tt remove-two-char-words} принимает список строк. В каждой строке выделяем слова разделенные пробелом и проверяем их на количество букв, если букв больше двух, то добавляем слово в результирующую строку.
+
+\section{Распечатка программы и её результаты}
+\subsection{Исходный код}
+\begin{lstlisting} [language=lisp]
+(defun russian-upper-case-p (char)
+  (position char "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"))
+
+(defun russian-char-downcase (char)
+  (let ((i (russian-upper-case-p char)))
+    (if i 
+        (char "абвгдеёжзийклмнопрстуфхцчшщъыьэюя" i)
+        (char-downcase char)))) 
+
+(defun russian-string-downcase (string)
+  (map 'string #'russian-char-downcase string))
+
+(defun more-two-symbol-p (string)
+  (let ((str (string-downcase (string-right-trim ",.:!?" string))) (symbols (list)))
+    (let ((len (length str)))
+    (do ((i 0 (+ i 1)))
+      ((>= i len))
+      (if (not (member (char str i) symbols))
+        (setf symbols (append symbols (list (char str i))))))
+    (> (length symbols) 2))))
+
+(defun space-p (char)
+  (member char '(#\Space #\Tab #\Newline)))
+
+(defun remove-two-char-words (text)
+  (let (ans (list))
+    (dolist (sentence text)
+      (let ((len (length sentence))
+            (right 0) 
+            (ans-str "")
+            (word "")
+            (more-two NIL))
+        (do ((left 0 (+ left 1)))
+            ((>= left len))
+            (setf right (or (position-if #'space-p sentence :start left) len))
+            (setf word (subseq sentence left right))
+            (setf more-two (more-two-symbol-p word))
+            (if more-two
+              (setf ans-str (concatenate 'string ans-str word)))
+            (if (and (< right len) (= right left))
+              (setf ans-str (concatenate 'string ans-str 
+                (make-string 1 :initial-element (char sentence right)))))
+            (setf left right))
+        (setf ans (append ans (list ans-str)))))
+      ans))
+\end{lstlisting}
+
+\subsection{Результаты работы}
+\begin{lstlisting}
+dandachok@dpc:~/Documents/Study/sem6/FP/lab4$ clisp
+[1]> (load "solution.lisp")
+;; Loading file solution.lisp ...
+;; Loaded file solution.lisp
+#P"/home/dandachok/Documents/Study/sem6/FP/lab4/solution.lisp"
+[2]> (remove-two-char-words '(" Оно скрылось за деревьями." " Мы прошли, не заметив его."))
+(" скрылось деревьями." " прошли, заметив его.")
+[7]> (remove-two-char-words '(" Оно она онн"))
+(" она ")
+[7]> (remove-two-char-words '(" Оно она онн. ja jj jaa adskf."))
+(" она adskf.")
+[7]> (remove-two-char-words '(" Оно она онн. ja jJ jaA adskf."))
+(" она adskf.") 
+\end{lstlisting}
+
+\section{Дневник отладки}
+\begin{tabular}{|c|p{5cm}|p{5cm}|c|}
+\hline
+Дата & Событие & Действие по исправлению & Примечание \\
+\hline
+06.05.2020 & Некорректная работа с кириллицей & Добавлены функции для работы с кириллицей & \\
+\hline
+\end{tabular}
+
+\section{Замечания автора по существу работы}
+
+\begin{lstlisting}[language=lisp]
+
+\end{lstlisting}
+
+\section{Выводы}
+Сложность программы по времени и по памяти линейная.
+\end{document}

@@ -1,0 +1,512 @@
+\documentclass{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{mathtext}
+\usepackage[T1,T2A, T2B]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{indentfirst}
+
+\usepackage{graphicx}
+\usepackage{pgfplots}
+
+\oddsidemargin=-0.4mm
+\textwidth=160mm
+\topmargin=4.6mm
+\textheight=210mm
+
+\parindent=0pt
+\parskip=3pt
+
+\title{Расчетно-графическая работа}
+\date{}
+
+\pgfplotsset{compat=1.9}
+\begin{document}
+
+\begin{titlepage}
+
+\vspace{100pt}
+\begin{center}
+    \huge \textbf{Расчетно-графическая работа} \\
+    \vspace{50pt}
+    \huge \textbf{Методы безусловной оптимизации}
+\end{center}
+\begin{flushright}
+
+\vspace{350pt}
+\begin{tabular}{rl}
+     \Large Студент: & \Large Д.Д.Наумов \\
+     \Large Группа: & \Large 8О-306Б-17 \\
+\end{tabular}
+\end{flushright}
+\end{titlepage}
+
+\setcounter{section}{0}
+
+\section{Классический метод}
+
+\textbf{Функция}: $f(x) = 2x_1^2 + x_1x_2 + 3x_2^2 + 45x_1 - 15x_2$
+
+\textbf{Задание}: Найти экстремум и определить его тип ($max$ или $min$) для заданной функции $f(x)$ классическим методом, используя  необходимые и достаточные условия существования экстремума.
+
+\textbf{Решение:}
+
+\begin{enumerate}
+    \setcounter{enumi}{0}
+    \item 
+        $\frac{\partial f(x)}{\partial x_1} = 4x_1 + x_2 + 45$
+    
+        $\frac{\partial f(x)}{\partial x_2} = x_1 + 6x_2 - 15$
+    \item
+        $\begin{cases}
+            4x_1 + x_2 + 45 = 0 \\
+            x_1 + 6x_2 - 15 = 0
+        \end{cases}
+        \Longrightarrow \ \ 
+        \begin{cases}
+            -23x_2 = -105 \\
+            x_1 = 15 - 6x_2
+        \end{cases}
+        \Longrightarrow
+        \begin{cases}
+            x_2 = \frac{105}{23} \approx 4.6 \\
+            x_1 = - \frac{285}{23} \approx -12.4
+        \end{cases}$ 
+        
+        $x^{ст} = \begin{pmatrix}
+             -12.4  \\
+             4.6 
+        \end{pmatrix}$
+    \item
+        $\frac{\partial^2 f(x)}{\partial^2 x_1} = 4$ \ \ 
+        $\frac{\partial^2 f(x)}{\partial^2 x_2} = 6$ \ \ 
+        $\frac{\partial^2 f(x)}{\partial x_1 \partial x_2} = 1$
+        
+        $\Gamma = 
+        \begin{pmatrix}
+            4& 1 \\
+            1& 6
+        \end{pmatrix}
+        $
+    \item
+        $\Delta_1 = 4$
+        
+        $\Delta_2 = 
+        \begin{vmatrix}
+            4 & 1 \\
+            1 & 6 \\
+        \end{vmatrix} = 23$
+    \item
+        $\Delta_1 > 0, \Delta_2 > 0 \Rightarrow x^{ст} - \text{точка } min$
+\end{enumerate}
+
+\pagebreak
+
+\section{Градиентный метод с постоянным шагом}
+
+\textbf{Задание}: Задать начальную точку и выполнить четыре шага градиентным методом с постоянным шагом.
+
+\textbf{Решение}:
+
+\begin{enumerate}
+    \item
+        $f(x) = 2x_1^2 + x_1x_2 + 3x_2^2 + 45x_1 - 15x_2$
+        
+        $x^{(0)} = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$, 
+        $h = 0.1, \ \varepsilon = 0.1, \ k= 0$
+        
+        $\nabla f(x) =
+        \begin{pmatrix}
+            4x_1 + x_2 + 45 \\
+            x_1 + 6x_2 - 15
+        \end{pmatrix}$
+\end{enumerate}
+
+\ \ \ \ Итерация 1:
+
+\begin{enumerate}
+    \setcounter{enumi}{1}
+    \item $\nabla f(x^{(0)}) = \begin{pmatrix} 45 \\ -15 \end{pmatrix}$
+    \item $|\nabla f(x^{(0)})| \approx 47 > \varepsilon$
+    
+        Условие окончания не выполнено
+    \item $x^{(1)} = x^{(0)} - h\nabla f(x^{(0)}) =
+        \begin{pmatrix} 0 \\ 0 \end{pmatrix} - 0.1
+        \begin{pmatrix} 45 \\ -15 \end{pmatrix} =
+        \begin{pmatrix} -4.5 \\ 1.5 \end{pmatrix}$
+    \item $f(x^{(1)}) = -184.5 < f(x^{(0)}) = 0$
+    \item $k = 1$
+\end{enumerate}
+
+\ \ \ \ Итерация 2:
+
+\begin{enumerate}
+    \setcounter{enumi}{1}
+    \item $\nabla f(x^{(1)}) = \begin{pmatrix} 28.5 \\ -10.5 \end{pmatrix}$
+    \item $|\nabla f(x^{(1)})| \approx 30 > \varepsilon$
+    
+        Условие окончания не выполнено
+    \item $x^{(2)} = x^{(1)} - h\nabla f(x^{(1)}) =
+        \begin{pmatrix} -4.5 \\ 1.5 \end{pmatrix} - 0.1
+        \begin{pmatrix} 28.5 \\ -10.5 \end{pmatrix} =
+        \begin{pmatrix} -7.35 \\ 2.55 \end{pmatrix}$
+    \item $f(x^{(2)}) = -260 < f(x^{(1)}) = -184$
+    \item $k = 2$
+\end{enumerate}
+
+\ \ \ \ Итерация 3:
+
+\begin{enumerate}
+    \setcounter{enumi}{1}
+    \item $\nabla f(x^{(2)}) = \begin{pmatrix} 18.15 \\ -7.05 \end{pmatrix}$
+    \item $|\nabla f(x^{(2)})| \approx 19.5 > \varepsilon$
+    
+        Условие окончания не выполнено
+    \item $x^{(3)} = x^{(2)} - h\nabla f(x^{(2)}) =
+        \begin{pmatrix} -7.35 \\ 2.55 \end{pmatrix} - 0.1
+        \begin{pmatrix} 18.15 \\ -7.05 \end{pmatrix} =
+        \begin{pmatrix} -9.165 \\ 3.255 \end{pmatrix}$
+    \item $f(x^{(3)}) = -291 < f(x^{(2)}) = -260$
+    \item $k = 3$
+\end{enumerate}
+
+\ \ \ \ Итерация 4:
+
+\begin{enumerate}
+    \setcounter{enumi}{1}
+    \item $\nabla f(x^{(3)}) = \begin{pmatrix} 11.595 \\ -4.635 \end{pmatrix}$
+    \item $|\nabla f(x^{(3)})| \approx 12.5 > \varepsilon$
+    
+        Условие окончания не выполнено
+    \item $x^{(4)} = x^{(3)} - h\nabla f(x^{(3)}) =
+        \begin{pmatrix} -9.165 \\ 3.255 \end{pmatrix} - 0.1
+        \begin{pmatrix} 11.595 \\ -4.635 \end{pmatrix} =
+        \begin{pmatrix} -10.3245 \\ 3.7 \end{pmatrix}$
+    \item $f(x^{(4)}) = -304 < f(x^{(3)}) = -291$
+    \item $k = 4$
+\end{enumerate}
+
+\pagebreak
+
+\section{Метод наискорейшего спуска}
+
+\textbf{Задание}: Задать начальную точку и выполнить три шага методом наискорейшего спуска. 
+
+\textbf{Решение}:
+
+\begin{enumerate}
+    \item
+        $f(x) = 2x_1^2 + x_1x_2 + 3x_2^2 + 45x_1 - 15x_2$
+        
+        $x^{(0)} = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$, 
+        $h = 0.1, \ \varepsilon = 0.1, \ k= 0$
+        
+        $\nabla f(x) =
+        \begin{pmatrix}
+            4x_1 + x_2 + 45 \\
+            x_1 + 6x_2 - 15
+        \end{pmatrix}$
+\end{enumerate}
+
+\ \ \ \ Итерация 1:
+
+\begin{enumerate}
+    \setcounter{enumi}{1}
+    \item $\nabla f(x^{(0)}) = \begin{pmatrix} 45 \\ -15 \end{pmatrix}$
+    \item $|\nabla f(x^{(0)})| \approx 47 > \varepsilon$
+    
+        Условие окончания не выполнено
+    \item $x^{(1)}(h_{0}) = x^{(0)} - h_{0}\nabla f(x^{(0)}) =
+        \begin{pmatrix} 0 \\ 0 \end{pmatrix} - h_{0}
+        \begin{pmatrix} 45 \\ -15 \end{pmatrix} =
+        \begin{pmatrix} -4.5h_{0} \\ 1.5h_{0} \end{pmatrix}$
+        
+        
+        $\begin{pmatrix}
+            \begin{pmatrix} 45 \\ -15 \end{pmatrix},
+            \begin{pmatrix} -165h_{0} + 45 \\ 105h_{0} - 15 \end{pmatrix}
+        \end{pmatrix} = -9000h_{0} + 2250 = 0$
+        
+        
+        $h_{0} = 0.25$
+    \item $x^{(1)} = \begin{pmatrix} -11.25 \\ 3.75 \end{pmatrix}$
+    \item $k = 1$
+\end{enumerate}
+
+\ \ \ \ Итерация 2:
+
+\begin{enumerate}
+    \setcounter{enumi}{1}
+    \item $\nabla f(x^{(1)}) = \begin{pmatrix} 3.75 \\ -3.75 \end{pmatrix}$
+    \item $|\nabla f(x^{(1)})| \approx 5.3 > \varepsilon$
+    
+        Условие окончания не выполнено
+    \item $x^{(2)}(h_{1}) = x^{(1)} - h_{1}\nabla f(x^{(1)}) =
+        \begin{pmatrix} -11.25 \\ 3.75 \end{pmatrix} - h_{1}
+        \begin{pmatrix} 3.75 \\ -3.75 \end{pmatrix} =
+        \begin{pmatrix} -11.25 - 3.75h_{1} \\ 3.75 + 3.75h_{1} \end{pmatrix}$
+        
+        
+        $\begin{pmatrix}
+            \begin{pmatrix} 3.75 \\ -3.75 \end{pmatrix},
+            \begin{pmatrix} 3.75 - 11.25h_{1} \\ -3.75 + 18.75h_{1} \end{pmatrix}
+        \end{pmatrix} = 22.7138 - 112.5h_{1} = 0$
+        
+        
+        $h_{1} = 0.20$
+    \item $x^{(2)} = \begin{pmatrix} -12 \\ 4.5 \end{pmatrix}$
+    \item $k = 2$
+\end{enumerate}
+
+\ \ \ \ Итерация 3:
+
+\begin{enumerate}
+    \setcounter{enumi}{1}
+    \item $\nabla f(x^{(2)}) = \begin{pmatrix} 1.5 \\ 0 \end{pmatrix}$
+    \item $|\nabla f(x^{(2)})| = 1.5 > \varepsilon = 0.1$
+    
+        Условие окончания не выполнено
+    \item $x^{(3)}(h_{2}) = x^{(2)} - h_{2}\nabla f(x^{(2)}) =
+        \begin{pmatrix} -12 \\ 4.5 \end{pmatrix} - h_{2}
+        \begin{pmatrix} 1.5 \\ 0 \end{pmatrix} =
+        \begin{pmatrix} -12 - 1.5h_{2} \\ 4.5 \end{pmatrix}$
+        
+        
+        $\begin{pmatrix}
+            \begin{pmatrix} 1.5 \\ 0 \end{pmatrix},
+            \begin{pmatrix} 1.5 - 6h_{2} \\ -1.5h_{2} \end{pmatrix}
+        \end{pmatrix} = 2.25 - 9h_{2} = 0$
+        
+        
+        $h_{2} = 0.25$
+    \item $x^{(3)} = \begin{pmatrix} -12.375 \\ 4.5 \end{pmatrix}$
+    \item $k = 3$
+\end{enumerate}
+
+\pagebreak
+
+\section{Метод покоординатного спуска}
+
+\textbf{Задание}: Задать начальную точку и выполнить три шага методом покоординатного спуска.
+
+\textbf{Решение}:
+
+\begin{enumerate}
+    \item
+        $f(x) = 2x_1^2 + x_1x_2 + 3x_2^2 + 45x_1 - 15x_2$
+        
+        $x^{(0)} = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$, 
+        $h = 0.1, \ \varepsilon = 0.1, \ n = 2$
+        
+        $\nabla f(x) =
+        \begin{pmatrix}
+            4x_1 + x_2 + 45 \\
+            x_1 + 6x_2 - 15
+        \end{pmatrix}$
+    \item $l = 0$
+    \item $f(x^{(0)}) = 0$
+\end{enumerate}
+
+\ \ \ \ Итерация 1:
+
+\begin{enumerate}
+    \setcounter{enumi}{3}
+    \item $k = 1$
+    \item $\frac{\partial f(x^{k+nl-1})}{\partial x_k} = \frac{\partial f(x^{(0)})}{\partial x_1} = 45$
+    \item $\left|\left|\frac{\partial f(x^{(0)})}{\partial x_1}\right|\right| < \varepsilon$ - нет
+    \item $e_{1} = \begin{pmatrix} 1 \\ 0 \end{pmatrix}$
+    \item $x^{(1)} = x^{(0)} - h \frac{\partial f(x^{(0)})}{\partial x_1} e_1 = 
+        \begin{pmatrix} 0 \\ 0 \end{pmatrix} - 0.1 \cdot (45) \cdot \begin{pmatrix} 1 \\ 0 \end{pmatrix} = 
+        \begin{pmatrix} -4.5 \\ 0 \end{pmatrix}$
+    \item $f(x^{(1)}) = -162.0$
+    \item $f(x^{(1)}) = -162 < f(x^{(0)}) = 0$
+    \item $k \ne n$
+    \item k = 2
+\end{enumerate}
+
+\ \ \ \ Итерация 2:
+
+\begin{enumerate}
+    \setcounter{enumi}{4}
+    \item $\frac{\partial f(x^{(1)})}{\partial x_2} = -19.5$
+    \item $\left|\left|\frac{\partial f(x^{(1)})}{\partial x_2}\right|\right| > \varepsilon$
+    \item $e_{2} = \begin{pmatrix} 0 \\ 1 \end{pmatrix}$
+    \item $x^{(2)} = x^{(1)} - h \frac{\partial f(x^{(1)})}{\partial x_2} e_2 = 
+        \begin{pmatrix} -4.5 \\ 0 \end{pmatrix} - 0.1 \cdot (-19.5) \cdot \begin{pmatrix} 0 \\ 1 \end{pmatrix} = 
+        \begin{pmatrix} -4.5 \\ 1.95 \end{pmatrix}$
+    \item $f(x^{(2)}) = -188$
+    \item $f(x^{(2)}) = -188 < f(x^{(1)}) = -162$
+    \item $k = n \ \ \Rightarrow \ \ l = 1$
+\end{enumerate}
+
+\ \ \ \ Итерация 3:
+
+\begin{enumerate}
+    \setcounter{enumi}{3}
+    \item $k = 1$
+    \item $\frac{\partial f(x^{(2)})}{\partial x_1} = 28.95$
+    \item $\left|\left|\frac{\partial f(x^{(2)})}{\partial x_1}\right|\right| > \varepsilon$
+    \item $e_{1} = \begin{pmatrix} 1 \\ 0 \end{pmatrix}$
+    \item $x^{(3)} = x^{(2)} - h \frac{\partial f(x^{(2)})}{\partial x_1} e_1 = 
+        \begin{pmatrix} -4.5 \\ 1.95 \end{pmatrix} - 0.1 \cdot (28.95) \cdot \begin{pmatrix} 1 \\ 0 \end{pmatrix} = 
+        \begin{pmatrix} -7.395 \\ 1.95 \end{pmatrix}$
+    \item $f(x^{(3)}) = -255.67$
+    \item $f(x^{(3)}) = -255 < f(x^{(2)}) = -188$
+    \item $k \ne n$
+    \item k = 2
+\end{enumerate}
+
+\pagebreak
+
+\section{Метод Гаусса-Зейделя}
+
+\textbf{Задание}: Задать начальную точку и выполнить два шага методом Гаусса-Зейделя.
+
+\textbf{Решение}:
+
+\begin{enumerate}
+    \item
+        $f(x) = 2x_1^2 + x_1x_2 + 3x_2^2 + 45x_1 - 15x_2$
+        
+        $x^{(0)} = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$, 
+        $\varepsilon = 0.1, \ n = 2$
+        
+    \item $l = 0$
+    \item $f(x^{(0)}) = 0$
+\end{enumerate}
+
+\ \ \ \ Итерация 1:
+
+\begin{enumerate}
+    \setcounter{enumi}{3}
+    \item $k = 1$
+    \item $\frac{\partial f(x^{k+nl-1})}{\partial x_k} = \frac{\partial f(x^{(0)})}{\partial x_1} = 45$
+    \item $\left|\left|\frac{\partial f(x^{(0)})}{\partial x_1}\right|\right| > \varepsilon$ - продолжаем
+    \item $e_{1} = \begin{pmatrix} 1 \\ 0 \end{pmatrix}$
+    \item $x^{(1)}(h_0) = x^{(0)} - h_0 \frac{\partial f(x^{(0)})}{\partial x_1} e_1 = 
+        \begin{pmatrix} 0 \\ 0 \end{pmatrix} - h_0 \cdot (45) \cdot \begin{pmatrix} 1 \\ 0 \end{pmatrix} = 
+        \begin{pmatrix} -45h_0 \\ 0 \end{pmatrix}$
+        
+    \item $f(x^{(1)}(h_0)) = 4050h_0^2 - 2025h_0$
+    \item $\frac{\partial f(x^{(1)}(h_0))}{\partial h_0} = 8100h_0 - 2025 = 0$
+        
+        $h_0 = 0.25$
+    \item $x^{(1)} = \begin{pmatrix} -11.25 \\ 0 \end{pmatrix}$
+    \item $f(x^{(1)}) = -253 < f(x^{(0)}) = 0$
+    \item $k \ne n \ \Rightarrow \ k = 2$
+\end{enumerate}
+
+\ \ \ \ Итерация 2:
+
+\begin{enumerate}
+    \setcounter{enumi}{4}
+    \item $\frac{\partial f(x^{(1)})}{\partial x_2} = -26.25$
+    \item $\left|\left|\frac{\partial f(x^{(1)})}{\partial x_2}\right|\right| > \varepsilon$ - продолжаем
+    \item $e_{2} = \begin{pmatrix} 0 \\ 1 \end{pmatrix}$
+    \item $x^{(2)}(h_1) = x^{(1)} - h_1 \frac{\partial f(x^{(1)})}{\partial x_2} e_2 = 
+        \begin{pmatrix} -11.25 \\ 0 \end{pmatrix} - h_1 \cdot (-26.25) \cdot \begin{pmatrix} 0 \\ 1 \end{pmatrix} = 
+        \begin{pmatrix} -11.25 \\ 26.25h_1 \end{pmatrix}$
+        
+    \item $f(x^{(2)}(h_1)) = 2067h_1^2 - 689.0625h_1 - 253$
+    \item $\frac{\partial f(x^{(2)}(h_1))}{\partial h_1} = 4134h_1 - 689 = 0$
+        
+        $h_1 \approx 0.17$
+    \item $x^{(2)} = \begin{pmatrix} -11.25 \\ 4.46 \end{pmatrix}$
+    \item $f(x^{(2)}) = -310 < f(x^{(1)}) = -253$
+    \item $k = n \ \Rightarrow \ l = 1$
+    
+    Переходим к 4
+\end{enumerate}
+
+\pagebreak
+
+\section{Метод Ньютона}
+
+\textbf{Задание}: Задать начальную точку и выполнить один шаг методом Ньютона. 
+
+\textbf{Решение}:
+
+\begin{enumerate}
+    \item
+        $f(x) = 2x_1^2 + x_1x_2 + 3x_2^2 + 45x_1 - 15x_2$
+        
+        $x^{(0)} = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$, 
+        $\varepsilon = 0.1$
+        
+        $\nabla f(x) =
+        \begin{pmatrix}
+            4x_1 + x_2 + 45 \\
+            x_1 + 6x_2 - 15
+        \end{pmatrix}$
+    \item $\nabla f(x^{(0)}) =
+    \begin{pmatrix}
+        45 \\
+        -15
+    \end{pmatrix}$
+    \item $\left| \nabla f(x^{(0)}) \right| = \sqrt{45^2 + (-15)^2} \approx 47 > \varepsilon$
+    
+    Критерий окончания не выполнено
+    \item $\frac{\partial ^2 f(x)}{\partial x_1^2} = 4$ 
+        $\frac{\partial ^2 f(x)}{\partial x_2^2} = 6$
+        $\frac{\partial ^2 f(x)}{\partial x_1 \partial x_2} = 1$
+
+        $\Gamma = \begin{pmatrix} 4 & 1 \\ 1 & 6 \end{pmatrix}$
+    \item $\Gamma(x_0) = \begin{pmatrix} 4 & 1 \\ 1 & 6 \end{pmatrix}$
+    \item $\Gamma^{-1}(x_0) = \begin{pmatrix} \frac{6}{23} & \frac{-1}{23} \\\\ \frac{-1}{23} & \frac{4}{23} \end{pmatrix}$
+    \item $\Delta_1 = \frac{6}{23} > 0, \ $ 
+        $\Delta_2 = \begin{vmatrix} \frac{6}{23} & \frac{-1}{23} \\\\ \frac{-1}{23} & \frac{4}{23} \end{vmatrix} = 1 > 0 \ \Rightarrow \ \Gamma^{-1}(x_0) > 0$
+    \item $x^{(1)} = x^{(0)} - \Gamma^{-1}(x_0) \nabla f(x_0) = $
+        $\begin{pmatrix} 0 \\ 0 \end{pmatrix} - $
+        $\begin{pmatrix} \frac{6}{23} & \frac{-1}{23} \\\\ \frac{-1}{23} & \frac{4}{23} \end{pmatrix}$
+        $\begin{pmatrix} 45 \\ -15 \end{pmatrix} = \begin{pmatrix} \frac{-275}{23} \\\\ \frac{105}{23} \end{pmatrix} \approx$
+        $\begin{pmatrix} -12 \\ 4.6 \end{pmatrix}$
+
+\end{enumerate}
+
+\pagebreak
+
+\section{Иллюстрация методов}
+
+\begin{tikzpicture}
+\begin{axis} [
+    legend pos = {north east},
+    width = 450,
+    height = 450,
+    xlabel = {$x1$},
+    ylabel = {$x2$},
+    axis y line = right,
+    axis x line = left,
+    xmin = -14,
+    ymax = 5,
+    grid=major,
+]
+\legend {
+    классический,
+    градиентный,
+    метод наискорейшего спуска,
+    метод покоординатного спуска,
+    метод Гаусса-Зейделя,
+    метод Ньютона
+};
+\addplot [ultra thick, blue, mark=*]coordinates {
+    (0, 0) (-12.4, 4.6)
+};
+\addplot [ultra thick, red, mark=*]coordinates {
+    (0, 0) (-4.5, 1.5) (-7.35, 2.55) (-9.165, 3.255) (-10.3245, 3.7)
+};
+\addplot [ultra thick, brown, mark=*]coordinates {
+    (0, 0) (-11.25, 3.75) (-12, 4.5) (-12.375, 4.5)
+};
+\addplot [ultra thick, color=darkgray, mark=*] coordinates {
+    (0, 0) (-4.5, 0) (-4.5, 1.95) (-7.395, 1.95)
+};
+\addplot [ultra thick, color=magenta, mark=*] coordinates {
+    (0, 0) (-11.25, 0) (-11.25, 4.46)
+};
+\addplot [ultra thick, color=orange, mark=*] coordinates {
+    (0, 0) (-12.0, 4.6)
+};
+\end{axis}
+\end{tikzpicture}
+
+\end{document}

@@ -1,0 +1,120 @@
+\documentclass[12pt]{article}
+
+\usepackage{fullpage}
+\usepackage{multicol,multirow}
+\usepackage{tabularx}
+\usepackage{ulem}
+\usepackage[utf8]{inputenc}
+\usepackage[english, russian]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{titlesec}
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries}{\thesection.}{0.3em}{}
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries}{\thesubsection.}{0.3em}{}
+
+\titlespacing{\section}{0pt}{*2}{*2}
+\titlespacing{\subsection}{0pt}{*1}{*1}
+\titlespacing{\subsubsection}{0pt}{*0}{*0}
+\usepackage{listings}
+\lstloadlanguages{Lisp}
+\lstset{extendedchars=false,
+	breaklines=true,
+	breakatwhitespace=true,
+	keepspaces = true,
+	tabsize=2
+}
+\begin{document}
+
+
+\section*{Отчет по лабораторной работе №\,2 
+по курсу \\
+\guillemotleft Функциональное программирование\guillemotright}
+\begin{flushright}
+Студент группы 8О-306 МАИ \textit{Наумов Дмитрий}, \textnumero 15 по списку \\
+\makebox[7cm]{Контакты: {\tt dandachok@gmail.com} \hfill} \\
+\makebox[7cm]{Работа выполнена: 18.04.2020 \hfill} \\
+\ \\
+Преподаватель: Иванов Дмитрий Анатольевич, доц. каф. 806 \\
+\makebox[7cm]{Отчет сдан: \hfill} \\
+\makebox[7cm]{Итоговая оценка: \hfill} \\
+\makebox[7cm]{Подпись преподавателя: \hfill} \\
+
+\end{flushright}
+
+\section{Тема работы}
+Простейшие функции для работы со списками Коммон Лисп
+
+\section{Цель работы}
+Научиться конструировать списки, находить элемент в списке, использовать схему линейной и древовидной рекурсии для обхода и реконструкции плоских списков и деревьев.
+
+\section{Задание (вариант №38)}
+Запрограммируйте рекурсивно на языке Коммон Лисп функцию индивидуумы (l), которая принимает в качестве аргумента список атомов l и выдаёт в результате список всех атомов, которые встречаются в l ровно один раз.
+
+\section{Оборудование студента}
+Процессор Intel Core i3-2100 4\,@\,2.2GHz, память: 8Gb, разрядность системы: 64.
+
+\section{Программное обеспечение}
+ОС Ubuntu 18.04.4 LTS, clisp 2.49.60
+
+\pagebreak
+
+\section{Идея, метод, алгоритм}
+Весь алгоритм реализован в функции {\tt f}, функция {\tt индивидуумы} лишь обертка над ней.
+Идея состоит в том, чтобы пройти по списку, и для каждого элемента проверить, есть ли его копия в оставшейся части списка. Но прежде чем добавлять елемент в результирующий список, так же надо узнать втречался ли он раньше. Для этого используется вспомогательный список {\tt dublicateList}.
+Туда помещаются все дубликаты которые встретились нам на пути.
+
+\section{Распечатка программы и её результаты}
+\subsection{Исходный код}
+\begin{lstlisting} [language=lisp]
+(defun f (inputList dublicateList)
+    (let ((head (first inputList)) (tail (rest inputList)))
+    (if (null inputList)
+        (list)
+        (if (member head dublicateList)
+            (f tail dublicateList)
+            (if (member head tail)
+                (f tail (append dublicateList (list head)))
+                (append (list head) (f tail dublicateList)))))))
+
+(defun индивидуумы (inputList)
+    (f inputList (list)))
+\end{lstlisting}
+
+\subsection{Результаты работы}
+\begin{lstlisting}
+dandachok@dpc:~/Documents/Study/sem6/FP/lab2$ clisp
+[1]> (load "solution.lisp")
+[2]> ( индивидуумы '(a b c a d c e))
+(B D E)
+[3]> ( индивидуумы '(a d c e))
+(A D C E)
+[4]> ( индивидуумы '(a))
+(A)
+[5]> ( индивидуумы '(a a))
+NIL
+[6]> ( индивидуумы '(a a b))
+(B)
+[7]> ( индивидуумы '(a b a b))
+NIL
+[12]> (exit)
+\end{lstlisting}
+
+\section{Дневник отладки}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Дата & Событие & Действие по исправлению & Примечание \\
+\hline
+\end{tabular}
+
+\section{Замечания автора по существу работы}
+Реализация списков в Лиспе, похожа на их реализацию в языке Prolog, который мы изучали на втором курсе, поэтому сложностей с работой с ними не возникло.
+
+\section{Выводы}
+Программа работает за квадратичное время и имеет линейную сложность по памяти. Не смотря на то, что явно функция проходит по каждому элементу списка всего раз, встроенная функция {\tt member}, которая вызывается для каждого элемента списка, работает также за линейное время, так и получается квадратичная сложность по времени. Учитывая что в лиспе при вызове функции пораметры передаются по значения и полностью копируются, сложность по памяти тоже может возрасти до квадратичной, но теоретически мы имеем всего один вспомогательный список.
+
+\end{document}
